@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<link rel="stylesheet" href="content/styles/periodicstyle.css" />
+    <meta charset="utf-8" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<script type="text/javascript" src="scripts/array.js"></script>
+	<script type="text/javascript" src="scripts/jquery.js"></script>
+	<title>Periodic Table</title>
+</head>
+<body>
+	<script>
+		
+		function createTable(options) {
+			var $main = $('<main>'),
+				$div = $('<div>'),
+				data = options.data,
+				$marquee = $('<marquee>'),
+				$p = $('<p>');
+
+			options.parent.append($main);
+			
+			$main.append($p, $div);
+			$p.text('PERIODIC TABLE OF ELEMENT');
+			$div.addClass('window');
+
+			for(let i = 0; i < data.length; i++) {
+				options.data = data[i];
+				options.parent = $main;
+
+				if(data.length - 1 == i || data.length -2 == i ) {
+					options.parent = $marquee;
+				}
+				$main.append($marquee);
+				createRow(options);
+			}
+		}
+
+		function createRow(options) {
+			var $article = $('<article>');
+			options.parent.append($article);
+			var data = options.data;
+
+			for(let i = 0; i < data.length; i++)
+			{
+				options = data[i];
+				options.parent = $article;
+				createTile(options);
+			}
+		}
+
+		function createTile(options) {
+			var $section, $ruby, $rb, $rt, $samp, $ins;
+
+			$ins = $('<ins>')
+				.text(options.number);
+
+			$rt = $('<rt>')
+				.text(options.name);
+
+			$rb = $('<rb>')
+				.text(options.abbr)
+				.attr('title', options.latinName);
+	
+			$ruby = $('<ruby>')
+				.append($rb, $rt);
+
+			$samp = $('<samp>')
+				.text(options.atomicMass);
+
+			$section = $('<section>')
+				.append($ins, $ruby, $samp)
+				.addClass(options.className);
+
+			options.parent.append($section);
+
+			var $win = $('.window')[0];
+			$section.onmouseenter = function (e) {
+				var elem = (e.target).cloneNode(true);
+				elem.addClass('clone');
+				$win
+					.html('')
+					.append(elem);
+			}
+		}
+
+		function createStrike(options) {
+			var data = options.data,
+				$strike,
+				$kbd = $('<kbd>');
+			
+			options.parent.append($kbd);
+			for (let i = 0; i < data.length; i++) {
+				$strike = $('<strike>')
+					.text(options.data[i].elemType)
+					.addClass(options.data[i].className);
+
+				$kbd.append($strike);
+			}
+		}
+
+		createTable({ parent: document.body, data: source.matrix });
+		createStrike({ parent: document.getElementsByTagName('main')[0], data: source.slot });
+
+	</script>
+</body>
+</html>
